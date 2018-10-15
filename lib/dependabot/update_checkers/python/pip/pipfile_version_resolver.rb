@@ -387,7 +387,8 @@ module Dependabot
             end
             raise if cmd.start_with?("pyenv local 2.7.15 &&")
 
-            cmd = "pyenv local 2.7.15 && " + cmd + " && pyenv local --unset"
+            cmd = "pyenv local 2.7.15 && " +
+                  cmd + " --verbose && pyenv local --unset"
             retry
           end
 
