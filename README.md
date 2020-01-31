@@ -4,6 +4,8 @@
 
 # Dependabot Core [![Dependabot Status][dependabot-status]][dependabot]
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/MarcelRaschke/dependabot-core.svg)](https://greenkeeper.io/)
+
 Dependabot Core is the heart of [Dependabot][dependabot]. It handles the logic
 for updating dependencies on GitHub (including GitHub Enterprise) and GitLab. We
 plan to add support for Bitbucket in future, too.
