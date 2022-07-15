@@ -169,7 +169,7 @@ RSpec.describe Dependabot::FileParsers::Python::Pip::PipfileFilesParser do
           parser.dependency_set.dependencies.select(&:top_level?)
         end
 
-        # Note: This is a bug in Pipenv! The name `discord.py` is not being
+        # NOTE: This is a bug in Pipenv! The name `discord.py` is not being
         # properly normalised in the `Pipfile.lock`. Should be 4 once fixed.
         its(:length) { is_expected.to eq(3) }
 

@@ -10,8 +10,8 @@ module Dependabot
     module Python
       class Pip
         class RequirementsUpdater
-          PYPROJECT_OR_SEPARATOR = /(?<=[a-zA-Z0-9*])\s*\|+/
-          PYPROJECT_SEPARATOR = /#{PYPROJECT_OR_SEPARATOR}|,/
+          PYPROJECT_OR_SEPARATOR = /(?<=[a-zA-Z0-9*])\s*\|+/.freeze
+          PYPROJECT_SEPARATOR = /#{PYPROJECT_OR_SEPARATOR}|,/.freeze
 
           class UnfixableRequirement < StandardError; end
 
@@ -321,7 +321,8 @@ module Dependabot
               version.segments.count - 2
             elsif req_string.strip.start_with?("~")
               req_string.split(".").count == 1 ? 0 : 1
-            else raise "Don't know how to convert #{req_string} to range"
+            else
+              raise "Don't know how to convert #{req_string} to range"
             end
           end
 
@@ -343,7 +344,8 @@ module Dependabot
                 version_to_be_permitted.segments[index]
               elsif index == index_to_update
                 version_to_be_permitted.segments[index] + 1
-              else 0
+              else
+                0
               end
             end
 

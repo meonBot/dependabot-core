@@ -34,7 +34,7 @@ module Dependabot
           def update_pin(content)
             requirement_line_regex =
               /
-                \{\s*:#{Regexp.escape(dependency_name)},[^\}]*
+                \{\s*:#{Regexp.escape(dependency_name)},[^}]*
                 (?:ref|tag):\s+["']#{Regexp.escape(previous_pin)}["']
               /mx
 

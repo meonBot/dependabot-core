@@ -25,25 +25,22 @@ module Dependabot
             base_directory = File.join("src", "project",
                                        dependency_files.first.directory)
             base_parts = base_directory.split("/").length
-            updated_content =
-              SharedHelpers.in_a_temporary_directory(base_directory) do |dir|
-                write_temporary_dependency_files
+            SharedHelpers.in_a_temporary_directory(base_directory) do |dir|
+              write_temporary_dependency_files
 
-                SharedHelpers.with_git_configured(credentials: credentials) do
-                  # Shell out to dep, which handles everything for us.
-                  # Note: We are currently doing a full install here (we're not
-                  # passing no-vendor) because dep needs to generate the digests
-                  # for each project.
-                  command = "dep ensure -update #{deps.map(&:name).join(' ')}"
-                  dir_parts = dir.realpath.to_s.split("/")
-                  gopath = File.join(dir_parts[0..-(base_parts + 1)])
-                  run_shell_command(command, "GOPATH" => gopath)
-                end
-
-                File.read("Gopkg.lock")
+              SharedHelpers.with_git_configured(credentials: credentials) do
+                # Shell out to dep, which handles everything for us.
+                # Note: We are currently doing a full install here (we're not
+                # passing no-vendor) because dep needs to generate the digests
+                # for each project.
+                command = "dep ensure -update #{deps.map(&:name).join(' ')}"
+                dir_parts = dir.realpath.to_s.split("/")
+                gopath = File.join(dir_parts[0..-(base_parts + 1)])
+                run_shell_command(command, "GOPATH" => gopath)
               end
 
-            updated_content
+              File.read("Gopkg.lock")
+            end
           end
 
           private
@@ -109,7 +106,7 @@ module Dependabot
             req = dep.requirements.find { |r| r[:file] == manifest.name }
 
             if req.fetch(:source).fetch(:type) == "git" && !details["branch"]
-              # Note: we don't try to update to a specific revision if the
+              # NOTE: we don't try to update to a specific revision if the
               # branch was previously specified because the change in
               # specification type would be persisted in the lockfile
               details["revision"] = dep.version if details["revision"]

@@ -28,7 +28,7 @@ module Dependabot
             (?:\#semver:(?<semver>.+))|
             (?:\#(?<ref>.+))
           )?$
-        }ix
+        }ix.freeze
 
         def parse
           dependency_set = DependencySet.new
@@ -79,12 +79,12 @@ module Dependabot
             parse_yarn_lock(yarn_lock).each do |req, details|
               next unless details["version"]
 
-              # Note: The DependencySet will de-dupe our dependencies, so they
+              # NOTE: The DependencySet will de-dupe our dependencies, so they
               # end up unique by name. That's not a perfect representation of
               # the nested nature of JS resolution, but it makes everything work
               # comparably to other flat-resolution strategies
               dependency_set << Dependency.new(
-                name: req.split(/(?<=\w)\@/).first,
+                name: req.split(/(?<=\w)@/).first,
                 version: details["version"],
                 package_manager: "npm_and_yarn",
                 requirements: []
@@ -98,7 +98,7 @@ module Dependabot
         def package_lock_dependencies
           dependency_set = DependencySet.new
 
-          # Note: The DependencySet will de-dupe our dependencies, so they
+          # NOTE: The DependencySet will de-dupe our dependencies, so they
           # end up unique by name. That's not a perfect representation of
           # the nested nature of JS resolution, but it makes everything work
           # comparably to other flat-resolution strategies
@@ -114,7 +114,7 @@ module Dependabot
         def shrinkwrap_dependencies
           dependency_set = DependencySet.new
 
-          # Note: The DependencySet will de-dupe our dependencies, so they
+          # NOTE: The DependencySet will de-dupe our dependencies, so they
           # end up unique by name. That's not a perfect representation of
           # the nested nature of JS resolution, but it makes everything work
           # comparably to other flat-resolution strategies
@@ -263,7 +263,8 @@ module Dependabot
           url =
             if resolved_url.include?("/~/") then resolved_url.split("/~/").first
             elsif (cred_url = credential_url(resolved_url)) then cred_url
-            else resolved_url.split("/")[0..2].join("/")
+            else
+              resolved_url.split("/")[0..2].join("/")
             end
 
           { type: "private_registry", url: url }
@@ -297,7 +298,7 @@ module Dependabot
 
             details_candidates =
               parsed_yarn_lock.
-              select { |k, _| k.split(/(?<=\w)\@/).first == name }
+              select { |k, _| k.split(/(?<=\w)@/).first == name }
 
             # If there's only one entry for this dependency, use it, even if
             # the requirement in the lockfile doesn't match
@@ -305,7 +306,7 @@ module Dependabot
 
             details ||=
               details_candidates.
-              find { |k, _| k.split(/(?<=\w)\@/)[1..-1].join("@") == req }&.
+              find { |k, _| k.split(/(?<=\w)@/)[1..-1].join("@") == req }&.
               last
 
             return details if details

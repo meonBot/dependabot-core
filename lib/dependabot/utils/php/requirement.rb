@@ -6,11 +6,11 @@ module Dependabot
   module Utils
     module Php
       class Requirement < Gem::Requirement
-        AND_SEPARATOR = /(?<=[a-zA-Z0-9*])(?<!\sas)[\s,]+(?![\s,]*[|-]|as)/
-        OR_SEPARATOR = /(?<=[a-zA-Z0-9*])[\s,]*\|\|?\s*/
+        AND_SEPARATOR = /(?<=[a-zA-Z0-9*])(?<!\sas)[\s,]+(?![\s,]*[|-]|as)/.freeze
+        OR_SEPARATOR = /(?<=[a-zA-Z0-9*])[\s,]*\|\|?\s*/.freeze
 
         def self.parse(obj)
-          new_obj = obj.gsub(/@\w+/, "").gsub(/[a-z0-9\-_\.]*\sas\s+/i, "")
+          new_obj = obj.gsub(/@\w+/, "").gsub(/[a-z0-9\-_.]*\sas\s+/i, "")
           super(new_obj)
         end
 
@@ -46,7 +46,8 @@ module Dependabot
           elsif req_string.match?(/^~[^>]/) then convert_tilde_req(req_string)
           elsif req_string.start_with?("^") then convert_caret_req(req_string)
           elsif req_string.match?(/\s-\s/) then convert_hyphen_req(req_string)
-          else req_string
+          else
+            req_string
           end
         end
         # rubocop:enable Metrics/PerceivedComplexity
@@ -70,7 +71,8 @@ module Dependabot
           upper_bound = parts.map.with_index do |part, i|
             if i < first_non_zero_index then part
             elsif i == first_non_zero_index then (part.to_i + 1).to_s
-            else 0
+            else
+              0
             end
           end.join(".")
 
