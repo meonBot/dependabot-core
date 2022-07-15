@@ -144,8 +144,7 @@ module Dependabot
             content = updated_pipfile_content
             content = freeze_other_dependencies(content)
             content = freeze_dependencies_being_updated(content)
-            content = add_private_sources(content)
-            content
+            add_private_sources(content)
           end
 
           def freeze_other_dependencies(pipfile_content)
@@ -248,10 +247,10 @@ module Dependabot
             return if $CHILD_STATUS.success?
 
             raise SharedHelpers::HelperSubprocessFailed.new(raw_response, cmd)
-          rescue SharedHelpers::HelperSubprocessFailed => error
-            original_error ||= error
-            raise unless error.message.include?("InstallationError") ||
-                         error.message.include?("Could not find a version")
+          rescue SharedHelpers::HelperSubprocessFailed => e
+            original_error ||= e
+            raise unless e.message.include?("InstallationError") ||
+                         e.message.include?("Could not find a version")
             raise original_error if cmd.include?("--two")
 
             cmd = cmd.gsub("pipenv ", "pipenv --two ")
@@ -307,7 +306,7 @@ module Dependabot
             SharedHelpers.in_a_temporary_directory do |dir|
               File.write(File.join(dir, "Pipfile"), pipfile_content)
               SharedHelpers.run_helper_subprocess(
-                command:  "pyenv exec python #{python_helper_path}",
+                command: "pyenv exec python #{python_helper_path}",
                 function: "get_pipfile_hash",
                 args: [dir]
               )

@@ -7,7 +7,7 @@ module Dependabot
   module FileUpdaters
     module Docker
       class Docker < Dependabot::FileUpdaters::Base
-        FROM_REGEX = /[Ff][Rr][Oo][Mm]/
+        FROM_REGEX = /[Ff][Rr][Oo][Mm]/.freeze
 
         def self.updated_files_regex
           [/dockerfile/]
@@ -75,7 +75,8 @@ module Dependabot
 
           old_declaration =
             if private_registry_url(file) then "#{private_registry_url(file)}/"
-            else ""
+            else
+              ""
             end
           old_declaration += "#{dependency.name}:#{old_tag(file)}"
           escaped_declaration = Regexp.escape(old_declaration)

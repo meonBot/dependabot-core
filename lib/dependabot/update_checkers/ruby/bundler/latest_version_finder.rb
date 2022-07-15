@@ -107,7 +107,7 @@ module Dependabot
 
             in_a_temporary_bundler_context do
               SharedHelpers.with_git_configured(credentials: credentials) do
-                # Note: we don't set `ref`, as we want to unpin the dependency
+                # NOTE: we don't set `ref`, as we want to unpin the dependency
                 source = ::Bundler::Source::Git.new(
                   "uri" => dependency_source_details[:url],
                   "branch" => dependency_source_details[:branch],

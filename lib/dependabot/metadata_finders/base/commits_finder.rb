@@ -92,7 +92,7 @@ module Dependabot
         end
 
         def version_regex(version)
-          /(?:[^0-9\.]|\A)#{Regexp.escape(version || "unknown")}\z/
+          /(?:[^0-9.]|\A)#{Regexp.escape(version || "unknown")}\z/
         end
 
         def dependency_tags

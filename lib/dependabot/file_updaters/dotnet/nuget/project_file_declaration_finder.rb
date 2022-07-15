@@ -14,7 +14,7 @@ module Dependabot
                <Dependency [^>]*?/>|
                <Dependency [^>]*?[^/]>.*?</Dependency>|
                <DevelopmentDependency [^>]*?/>|
-               <DevelopmentDependency [^>]*?[^/]>.*?</DevelopmentDependency>}mx
+               <DevelopmentDependency [^>]*?[^/]>.*?</DevelopmentDependency>}mx.freeze
 
           attr_reader :dependency_name, :declaring_requirement,
                       :dependency_files

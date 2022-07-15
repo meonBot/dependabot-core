@@ -40,14 +40,14 @@ async function allDependencyRanges(config) {
 function recoverVersionComments(oldLockfile, newLockfile) {
   const yarnRegex = /^# yarn v(\S+)\n/gm;
   const nodeRegex = /^# node v(\S+)\n/gm;
-  const oldMatch = regex => [].concat(oldLockfile.match(regex))[0];
+  const oldMatch = (regex) => [].concat(oldLockfile.match(regex))[0];
   return newLockfile
-    .replace(yarnRegex, match => oldMatch(yarnRegex) || "")
-    .replace(nodeRegex, match => oldMatch(nodeRegex) || "");
+    .replace(yarnRegex, (match) => oldMatch(yarnRegex) || "")
+    .replace(nodeRegex, (match) => oldMatch(nodeRegex) || "");
 }
 
 async function updateDependencyFile(directory, depName) {
-  const readFile = fileName =>
+  const readFile = (fileName) =>
     fs.readFileSync(path.join(directory, fileName)).toString();
   const originalYarnLock = readFile("yarn.lock");
   const originalPackageJson = readFile("package.json");
@@ -55,14 +55,14 @@ async function updateDependencyFile(directory, depName) {
   const flags = {
     ignoreScripts: true,
     ignoreWorkspaceRootCheck: true,
-    ignoreEngines: true
+    ignoreEngines: true,
   };
   const reporter = new EventReporter();
   const config = new Config(reporter);
   await config.init({
     cwd: directory,
     nonInteractive: true,
-    enableDefaultRc: true
+    enableDefaultRc: true,
   });
   config.enableLockfileVersions = Boolean(originalYarnLock.match(/^# yarn v/m));
 
@@ -74,7 +74,7 @@ async function updateDependencyFile(directory, depName) {
   updatedYarnLock = recoverVersionComments(originalYarnLock, updatedYarnLock);
 
   return {
-    "yarn.lock": updatedYarnLock
+    "yarn.lock": updatedYarnLock,
   };
 }
 
