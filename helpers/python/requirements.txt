@@ -7,3 +7,4 @@ poetry==1.1.9
 
 # Some dependencies will only install if Cython is present
 Cython==0.29
+poetry-core>=1.1.0a7 # not directly required, pinned by Snyk to avoid a vulnerability
