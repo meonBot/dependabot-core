@@ -121,12 +121,12 @@ module Dependabot
           commit.sha,
           true
         )
-      rescue Octokit::UnprocessableEntity => error
+      rescue Octokit::UnprocessableEntity => e
         # Return quietly if the branch has been deleted
-        return nil if error.message.match?(/Reference does not exist/i)
+        return nil if e.message.match?(/Reference does not exist/i)
 
         # Return quietly if the branch has been merged
-        return nil if error.message.match?(/Reference cannot be updated/i)
+        return nil if e.message.match?(/Reference cannot be updated/i)
 
         raise
       end

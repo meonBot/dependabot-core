@@ -204,7 +204,7 @@ RSpec.describe Dependabot::UpdateCheckers::JavaScript::NpmAndYarn do
           "content-type" => "application/x-git-upload-pack-advertisement"
         }
         stub_request(:get, git_url + "/info/refs?service=git-upload-pack").
-          with(basic_auth: ["x-access-token", "token"]).
+          with(basic_auth: %w(x-access-token token)).
           to_return(
             status: 200,
             body: fixture("git", "upload_packs", upload_pack_fixture),
@@ -440,7 +440,7 @@ RSpec.describe Dependabot::UpdateCheckers::JavaScript::NpmAndYarn do
           )
         end
 
-        # Note: this is the dist-tag latest version, *not* the latest prerelease
+        # NOTE: this is the dist-tag latest version, *not* the latest prerelease
         it { is_expected.to eq(Gem::Version.new("2.0.0.pre.rc1")) }
 
         context "but only says so in their requirements (with a .)" do
@@ -941,7 +941,7 @@ RSpec.describe Dependabot::UpdateCheckers::JavaScript::NpmAndYarn do
           )
         end
 
-        # Note: The latest vision is 6.0.2, but we can't reach it as other
+        # NOTE: The latest vision is 6.0.2, but we can't reach it as other
         # dependencies constrain us
         it { is_expected.to eq(Gem::Version.new("5.7.3")) }
       end
@@ -1045,7 +1045,7 @@ RSpec.describe Dependabot::UpdateCheckers::JavaScript::NpmAndYarn do
           "content-type" => "application/x-git-upload-pack-advertisement"
         }
         stub_request(:get, git_url + "/info/refs?service=git-upload-pack").
-          with(basic_auth: ["x-access-token", "token"]).
+          with(basic_auth: %w(x-access-token token)).
           to_return(
             status: 200,
             body: fixture("git", "upload_packs", "is-number"),
@@ -1223,7 +1223,7 @@ RSpec.describe Dependabot::UpdateCheckers::JavaScript::NpmAndYarn do
           "content-type" => "application/x-git-upload-pack-advertisement"
         }
         stub_request(:get, git_url + "/info/refs?service=git-upload-pack").
-          with(basic_auth: ["x-access-token", "token"]).
+          with(basic_auth: %w(x-access-token token)).
           to_return(
             status: 200,
             body: fixture("git", "upload_packs", "is-number"),

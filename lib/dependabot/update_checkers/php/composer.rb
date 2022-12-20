@@ -116,7 +116,7 @@ module Dependabot
           urls = repositories.
                  select { |h| h["type"] == "composer" }.
                  map { |h| h["url"] }.compact.
-                 map { |url| url.gsub(%r{\/$}, "") + "/packages.json" }
+                 map { |url| url.gsub(%r{/$}, "") + "/packages.json" }
 
           unless repositories.any? { |rep| rep["packagist.org"] == false }
             urls << "https://packagist.org/p/#{dependency.name.downcase}.json"

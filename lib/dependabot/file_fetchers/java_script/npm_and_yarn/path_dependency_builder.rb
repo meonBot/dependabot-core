@@ -38,9 +38,9 @@ module Dependabot
           def details_from_yarn_lock
             parsed_yarn_lock.to_a.
               find do |n, _|
-                next false unless n.split(/(?<=\w)\@/).first == dependency_name
+                next false unless n.split(/(?<=\w)@/).first == dependency_name
 
-                n.split(/(?<=\w)\@/).last.start_with?("file:")
+                n.split(/(?<=\w)@/).last.start_with?("file:")
               end&.last
           end
 

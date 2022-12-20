@@ -8,7 +8,7 @@ require "dependabot/pull_request_creator"
 module Dependabot
   class PullRequestCreator
     class Labeler
-      DEPENDENCIES_LABEL_REGEX = %r{^[^/]*dependenc[^/]+$}i
+      DEPENDENCIES_LABEL_REGEX = %r{^[^/]*dependenc[^/]+$}i.freeze
       LANGUAGE_LABEL_DETAILS = {
         "bundler" => { name: "ruby", colour: "ce2d2d" },
         "submodules" => { name: "submodules", colour: "000000" },
@@ -258,8 +258,8 @@ module Dependabot
           accept: "application/vnd.github.symmetra-preview+json"
         )
         @labels = [*@labels, "dependencies"].uniq
-      rescue Octokit::UnprocessableEntity => error
-        raise unless error.errors.first.fetch(:code) == "already_exists"
+      rescue Octokit::UnprocessableEntity => e
+        raise unless e.errors.first.fetch(:code) == "already_exists"
 
         @labels = [*@labels, "dependencies"].uniq
       end
@@ -279,8 +279,8 @@ module Dependabot
           accept: "application/vnd.github.symmetra-preview+json"
         )
         @labels = [*@labels, "security"].uniq
-      rescue Octokit::UnprocessableEntity => error
-        raise unless error.errors.first.fetch(:code) == "already_exists"
+      rescue Octokit::UnprocessableEntity => e
+        raise unless e.errors.first.fetch(:code) == "already_exists"
 
         @labels = [*@labels, "security"].uniq
       end
@@ -305,8 +305,8 @@ module Dependabot
           accept: "application/vnd.github.symmetra-preview+json"
         )
         @labels = [*@labels, langauge_name].uniq
-      rescue Octokit::UnprocessableEntity => error
-        raise unless error.errors.first.fetch(:code) == "already_exists"
+      rescue Octokit::UnprocessableEntity => e
+        raise unless e.errors.first.fetch(:code) == "already_exists"
 
         @labels = [*@labels, langauge_name].uniq
       end

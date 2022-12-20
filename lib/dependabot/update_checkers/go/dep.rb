@@ -93,8 +93,8 @@ module Dependabot
           latest_release =
             begin
               latest_resolvable_released_version(unlock_requirement: true)
-            rescue SharedHelpers::HelperSubprocessFailed => error
-              raise unless error.message.include?("Solving failure")
+            rescue SharedHelpers::HelperSubprocessFailed => e
+              raise unless e.message.include?("Solving failure")
             end
 
           # If there's a resolvable release that includes the current pinned
@@ -154,9 +154,9 @@ module Dependabot
                 credentials: credentials
               ).latest_resolvable_version
             end
-        rescue SharedHelpers::HelperSubprocessFailed => error
+        rescue SharedHelpers::HelperSubprocessFailed => e
           # This should rescue resolvability errors in future
-          raise unless error.message.include?("Solving failure")
+          raise unless e.message.include?("Solving failure")
         end
 
         def latest_resolvable_released_version(unlock_requirement:)
@@ -203,9 +203,9 @@ module Dependabot
           ).latest_resolvable_version
 
           @git_tag_resolvable = true
-        rescue SharedHelpers::HelperSubprocessFailed => error
+        rescue SharedHelpers::HelperSubprocessFailed => e
           # This should rescue resolvability errors in future
-          raise unless error.message.include?("Solving failure")
+          raise unless e.message.include?("Solving failure")
 
           @git_tag_resolvable = false
         end

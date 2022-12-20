@@ -26,7 +26,7 @@ module Dependabot
         PLUGIN_SELECTOR     = "plugins > plugin"
 
         # Regex to get the property name from a declaration that uses a property
-        PROPERTY_REGEX      = /\$\{(?<property>.*?)\}/
+        PROPERTY_REGEX      = /\$\{(?<property>.*?)\}/.freeze
 
         def parse
           dependency_set = DependencySet.new
@@ -46,15 +46,15 @@ module Dependabot
           doc.css(DEPENDENCY_SELECTOR).each do |dependency_node|
             dep = dependency_from_dependency_node(pom, dependency_node)
             dependency_set << dep if dep
-          rescue DependencyFileNotEvaluatable => error
-            errors << error
+          rescue DependencyFileNotEvaluatable => e
+            errors << e
           end
 
           doc.css(PLUGIN_SELECTOR).each do |dependency_node|
             dep = dependency_from_plugin_node(pom, dependency_node)
             dependency_set << dep if dep
-          rescue DependencyFileNotEvaluatable => error
-            errors << error
+          rescue DependencyFileNotEvaluatable => e
+            errors << e
           end
 
           raise errors.first if errors.any? && dependency_set.dependencies.none?
@@ -140,7 +140,7 @@ module Dependabot
           return nil if requirement.include?(",")
 
           # Remove brackets if present (and not denoting a range)
-          requirement.gsub(/[\(\)\[\]]/, "").strip
+          requirement.gsub(/[()\[\]]/, "").strip
         end
 
         def dependency_requirement(pom, dependency_node)
@@ -203,7 +203,7 @@ module Dependabot
         end
 
         def pomfiles
-          # Note: this (correctly) excludes any parent POMs that were downloaded
+          # NOTE: this (correctly) excludes any parent POMs that were downloaded
           @pomfiles ||=
             dependency_files.select { |f| f.name.end_with?("pom.xml") }
         end
