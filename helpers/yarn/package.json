@@ -3,9 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@dependabot/yarn-lib": "^1.10.1",
-    "semver": "^5.6.0",
-    "@snyk/protect": "latest"
+
   },
   "devDependencies": {
     "eslint": "^5.8.0",
