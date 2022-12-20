@@ -15,17 +15,17 @@ module Dependabot
           "-" => { qualifier: 2, number: 3 }
         }.freeze
         NAMED_QUALIFIERS_HIERARCHY = {
-          "a"        => 1, "alpha"     => 1,
-          "b"        => 2, "beta"      => 2,
-          "m"        => 3, "milestone" => 3,
-          "rc"       => 4, "cr"        => 4,
+          "a" => 1, "alpha"     => 1,
+          "b" => 2, "beta"      => 2,
+          "m" => 3, "milestone" => 3,
+          "rc" => 4, "cr" => 4,
           "snapshot" => 5,
-          "ga"       => 6, "" => 6, "final" => 6,
-          "sp"       => 7
+          "ga" => 6, "" => 6, "final" => 6,
+          "sp" => 7
         }.freeze
         VERSION_PATTERN =
           '[0-9a-zA-Z]+(?>\.[0-9a-zA-Z]+)*(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?'
-        ANCHORED_VERSION_PATTERN = /\A\s*(#{VERSION_PATTERN})?\s*\z/
+        ANCHORED_VERSION_PATTERN = /\A\s*(#{VERSION_PATTERN})?\s*\z/.freeze
 
         def self.correct?(version)
           return false if version.nil?
@@ -105,9 +105,9 @@ module Dependabot
           version = version.gsub(/([A-Za-z])(\d)/, '\1-\2')
 
           # Replace empty tokens with 0
-          version = version.gsub(/([\.\-])([\.\-])/, '\10\2')
-          version = version.gsub(/^([\.\-])/, '0\1')
-          version.gsub(/([\.\-])$/, '\10')
+          version = version.gsub(/([.\-])([.\-])/, '\10\2')
+          version = version.gsub(/^([.\-])/, '0\1')
+          version.gsub(/([.\-])$/, '\10')
         end
 
         def trim_version(version)
@@ -127,7 +127,7 @@ module Dependabot
         end
 
         def split_into_prefixed_tokens(version)
-          ".#{version}".split(/(?=[\-\.])/)
+          ".#{version}".split(/(?=[\-.])/)
         end
 
         def pad_for_comparison(prefixed_tokens, other_prefixed_tokens)

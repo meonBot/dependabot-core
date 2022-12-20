@@ -16,7 +16,7 @@ module Dependabot
         # - Unlock the dependency we're checking in the requirements.in file
         # - Run `pip-compile` and see what the result is
         class PipCompileVersionResolver
-          VERSION_REGEX = /[0-9]+(?:\.[A-Za-z0-9\-_]+)*/
+          VERSION_REGEX = /[0-9]+(?:\.[A-Za-z0-9\-_]+)*/.freeze
 
           attr_reader :dependency, :dependency_files, :credentials
 
@@ -70,8 +70,8 @@ module Dependabot
                     find { |dep| dep["file"] == source_compiled_file_name }&.
                     fetch("version")
                 end
-              rescue SharedHelpers::HelperSubprocessFailed => error
-                handle_pip_compile_errors(error)
+              rescue SharedHelpers::HelperSubprocessFailed => e
+                handle_pip_compile_errors(e)
               end
             return unless @latest_resolvable_version_string
 
@@ -125,10 +125,10 @@ module Dependabot
                 end
 
                 true
-              rescue SharedHelpers::HelperSubprocessFailed => error
-                raise unless error.message.include?("Could not find a version")
+              rescue SharedHelpers::HelperSubprocessFailed => e
+                raise unless e.message.include?("Could not find a version")
 
-                msg = clean_error_message(error.message)
+                msg = clean_error_message(e.message)
                 raise if msg.empty?
 
                 raise DependencyFileNotResolvable, msg
@@ -151,10 +151,10 @@ module Dependabot
               raw_response,
               command
             )
-          rescue SharedHelpers::HelperSubprocessFailed => error
-            original_error ||= error
-            raise unless error.message.include?("InstallationError") ||
-                         error.message.include?("Could not find a version")
+          rescue SharedHelpers::HelperSubprocessFailed => e
+            original_error ||= e
+            raise unless e.message.include?("InstallationError") ||
+                         e.message.include?("Could not find a version")
             raise original_error if File.exist?(".python-version")
 
             command = "pyenv local 2.7.15 && " + command
