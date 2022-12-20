@@ -10,10 +10,10 @@ module Dependabot
   module UpdateCheckers
     module Docker
       class Docker < Dependabot::UpdateCheckers::Base
-        VERSION_REGEX = /(?<version>[0-9]+(?:\.[a-zA-Z0-9]+)*)/
-        VERSION_WTIH_SUFFIX = /^#{VERSION_REGEX}(?<affix>-[a-z0-9.\-]+)?$/
-        VERSION_WTIH_PREFIX = /^(?<affix>[a-z0-9.\-]+-)?#{VERSION_REGEX}$/
-        NAME_WITH_VERSION = /#{VERSION_WTIH_PREFIX}|#{VERSION_WTIH_SUFFIX}/
+        VERSION_REGEX = /(?<version>[0-9]+(?:\.[a-zA-Z0-9]+)*)/.freeze
+        VERSION_WTIH_SUFFIX = /^#{VERSION_REGEX}(?<affix>-[a-z0-9.\-]+)?$/.freeze
+        VERSION_WTIH_PREFIX = /^(?<affix>[a-z0-9.\-]+-)?#{VERSION_REGEX}$/.freeze
+        NAME_WITH_VERSION = /#{VERSION_WTIH_PREFIX}|#{VERSION_WTIH_SUFFIX}/.freeze
 
         def latest_version
           @latest_version ||= fetch_latest_version
@@ -87,7 +87,7 @@ module Dependabot
           end
         end
 
-        # Note: It's important that this *always* returns a version (even if
+        # NOTE: It's important that this *always* returns a version (even if
         # it's the existing one) as it is what we later check the digest of.
         def fetch_latest_version
           unless dependency.version.match?(NAME_WITH_VERSION)
@@ -130,9 +130,9 @@ module Dependabot
           # can't order on those but will try to, so instead we should exclude
           # them (unless there's a `latest` version pushed to the registry, in
           # which case we'll use that to find the latest version)
-          return false unless tag.match?(/(^|\-)[0-9a-f]{7,}$/)
+          return false unless tag.match?(/(^|-)[0-9a-f]{7,}$/)
 
-          !tag.match?(/(^|\-)20[0-1]\d{5}$/)
+          !tag.match?(/(^|-)20[0-1]\d{5}$/)
         end
 
         def version_of_latest_tag

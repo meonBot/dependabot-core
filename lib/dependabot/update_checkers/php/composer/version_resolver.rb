@@ -9,9 +9,9 @@ module Dependabot
     module Php
       class Composer
         class VersionResolver
-          VERSION_REGEX = /[0-9]+(?:\.[A-Za-z0-9\-_]+)*/
+          VERSION_REGEX = /[0-9]+(?:\.[A-Za-z0-9\-_]+)*/.freeze
           SOURCE_TIMED_OUT_REGEX =
-            /The "(?<url>[^"]+packages\.json)".*timed out/
+            /The "(?<url>[^"]+packages\.json)".*timed out/.freeze
 
           def initialize(credentials:, dependency:, dependency_files:,
                          requirements_to_unlock:, latest_allowable_version:)
@@ -47,12 +47,12 @@ module Dependabot
 
               run_update_checker
             end
-          rescue SharedHelpers::HelperSubprocessFailed => error
+          rescue SharedHelpers::HelperSubprocessFailed => e
             retry_count ||= 0
             retry_count += 1
-            retry if retry_count < 2 && error.message.include?("404 Not Found")
-            retry if retry_count < 2 && error.message.include?("timed out")
-            handle_composer_errors(error)
+            retry if retry_count < 2 && e.message.include?("404 Not Found")
+            retry if retry_count < 2 && e.message.include?("timed out")
+            handle_composer_errors(e)
           end
 
           def run_update_checker
@@ -127,7 +127,7 @@ module Dependabot
             elsif error.message.start_with?("Could not parse version")
               raise Dependabot::DependencyFileNotResolvable, error.message
             elsif error.message.include?("requested PHP extension")
-              extensions = error.message.scan(/\sext\-.*?\s/).map(&:strip).uniq
+              extensions = error.message.scan(/\sext-.*?\s/).map(&:strip).uniq
               msg = "Dependabot's installed extensions didn't match those "\
                     "required by your application. Please add the following "\
                     "extensions to the platform config in your composer.json: "\

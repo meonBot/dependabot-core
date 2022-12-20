@@ -11,7 +11,7 @@ RSpec.describe Dependabot::SharedHelpers do
 
     let(:output_dir) { -> { Dir.pwd } }
     it "runs inside the temporary directory created" do
-      expect(in_a_temporary_directory).to match(%r{tmp\/dependabot_+.})
+      expect(in_a_temporary_directory).to match(%r{tmp/dependabot_+.})
     end
 
     it "yields the path to the temporary directory created" do
@@ -42,7 +42,7 @@ RSpec.describe Dependabot::SharedHelpers do
     end
 
     context "when the forked process raises an error" do
-      let(:task) { -> { raise Exception, "hell" } }
+      let(:task) { -> { raise StandardError, "hell" } }
 
       it "raises a ChildProcessFailed error" do
         expect { run_sub_process }.
