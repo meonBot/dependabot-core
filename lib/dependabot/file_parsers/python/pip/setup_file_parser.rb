@@ -11,10 +11,10 @@ module Dependabot
     module Python
       class Pip
         class SetupFileParser
-          INSTALL_REQUIRES_REGEX = /install_requires\s*=\s*(\[.*?\])[,)\s]/m
-          SETUP_REQUIRES_REGEX = /setup_requires\s*=\s*(\[.*?\])[,)\s]/m
-          TESTS_REQUIRE_REGEX = /tests_require\s*=\s*(\[.*?\])[,)\s]/m
-          EXTRAS_REQUIRE_REGEX = /extras_require\s*=\s*(\{.*?\})[,)\s]/m
+          INSTALL_REQUIRES_REGEX = /install_requires\s*=\s*(\[.*?\])[,)\s]/m.freeze
+          SETUP_REQUIRES_REGEX = /setup_requires\s*=\s*(\[.*?\])[,)\s]/m.freeze
+          TESTS_REQUIRE_REGEX = /tests_require\s*=\s*(\[.*?\])[,)\s]/m.freeze
+          EXTRAS_REQUIRE_REGEX = /extras_require\s*=\s*(\{.*?\})[,)\s]/m.freeze
 
           def initialize(dependency_files:)
             @dependency_files = dependency_files
@@ -61,9 +61,9 @@ module Dependabot
               check_requirements(requirements)
               requirements
             end
-          rescue SharedHelpers::HelperSubprocessFailed => error
-            if error.message.start_with?("InstallationError")
-              raise Dependabot::DependencyFileNotEvaluatable, error.message
+          rescue SharedHelpers::HelperSubprocessFailed => e
+            if e.message.start_with?("InstallationError")
+              raise Dependabot::DependencyFileNotEvaluatable, e.message
             end
 
             parsed_sanitized_setup_file
@@ -95,8 +95,8 @@ module Dependabot
               next unless dep["requirement"]
 
               Utils::Python::Requirement.new(dep["requirement"].split(","))
-            rescue Gem::Requirement::BadRequirementError => error
-              raise Dependabot::DependencyFileNotEvaluatable, error.message
+            rescue Gem::Requirement::BadRequirementError => e
+              raise Dependabot::DependencyFileNotEvaluatable, e.message
             end
           end
 

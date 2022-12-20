@@ -862,7 +862,7 @@ RSpec.describe Dependabot::FileUpdaters::JavaScript::NpmAndYarn do
 
           version =
             updated_yarn_lock.content.
-            match(/npm\@next:\n  version "(?<version>.*?)"/).
+            match(/npm@next:\n  version "(?<version>.*?)"/).
             named_captures["version"]
 
           expect(Dependabot::Utils::JavaScript::Version.new(version)).

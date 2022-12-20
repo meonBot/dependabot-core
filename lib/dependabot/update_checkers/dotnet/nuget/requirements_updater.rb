@@ -13,7 +13,7 @@ module Dependabot
     module Dotnet
       class Nuget
         class RequirementsUpdater
-          VERSION_REGEX = /[0-9a-zA-Z]+(?:\.[a-zA-Z0-9\-]+)*/
+          VERSION_REGEX = /[0-9a-zA-Z]+(?:\.[a-zA-Z0-9\-]+)*/.freeze
 
           def initialize(requirements:, latest_version:, source_details:)
             @requirements = requirements
@@ -26,7 +26,7 @@ module Dependabot
           def updated_requirements
             return requirements unless latest_version
 
-            # Note: Order is important here. The FileUpdater needs the updated
+            # NOTE: Order is important here. The FileUpdater needs the updated
             # requirement at index `i` to correspond to the previous requirement
             # at the same index.
             requirements.map do |req|
@@ -57,7 +57,7 @@ module Dependabot
           end
 
           def update_wildcard_requirement(req_string)
-            precision = req_string.split("*").first.split(/\.|\-/).count
+            precision = req_string.split("*").first.split(/\.|-/).count
             wilcard_section = req_string.partition(/(?=[.\-]\*)/).last
 
             version_parts = latest_version.segments.first(precision)

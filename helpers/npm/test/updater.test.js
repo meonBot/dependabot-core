@@ -4,7 +4,7 @@ const fs = require("fs-extra");
 const nock = require("nock");
 const {
   updateDependencyFiles,
-  updateVersionPattern
+  updateVersionPattern,
 } = require("../lib/updater");
 const helpers = require("./helpers");
 
@@ -40,7 +40,7 @@ describe("updater", () => {
     expect(result).toEqual({
       "package-lock.json": helpers.loadFixture(
         "updater/updated/package-lock.json"
-      )
+      ),
     });
   });
 });

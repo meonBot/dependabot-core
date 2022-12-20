@@ -21,7 +21,7 @@ module Dependabot
           require_relative "shared_bundler_helpers"
           include SharedBundlerHelpers
 
-          GEM_NOT_FOUND_ERROR_REGEX = /locked to (?<name>[^\s]+) \(/
+          GEM_NOT_FOUND_ERROR_REGEX = /locked to (?<name>[^\s]+) \(/.freeze
 
           def initialize(dependency:, unprepared_dependency_files:,
                          credentials:, ignored_versions:,
@@ -94,9 +94,9 @@ module Dependabot
               end
               details
             end
-          rescue Dependabot::DependencyFileNotResolvable => error
+          rescue Dependabot::DependencyFileNotResolvable => e
             return if ignored_versions.any? && !dependency.appears_in_lockfile?
-            raise unless ruby_lock_error?(error)
+            raise unless ruby_lock_error?(e)
 
             @gemspec_ruby_unlocked = true
             regenerate_dependency_files_without_ruby_lock && retry
@@ -129,13 +129,13 @@ module Dependabot
             begin
               definition = build_definition(dependencies_to_unlock)
               definition.resolve_remotely!
-            rescue ::Bundler::GemNotFound => error
-              unlock_yanked_gem(dependencies_to_unlock, error) && retry
-            rescue ::Bundler::HTTPError => error
+            rescue ::Bundler::GemNotFound => e
+              unlock_yanked_gem(dependencies_to_unlock, e) && retry
+            rescue ::Bundler::HTTPError => e
               # Retry network errors
               attempt ||= 1
               attempt += 1
-              raise if attempt > 3 || !error.message.include?("Network error")
+              raise if attempt > 3 || !e.message.include?("Network error")
 
               retry
             end
@@ -206,7 +206,7 @@ module Dependabot
           end
 
           def build_definition(dependencies_to_unlock)
-            # Note: we lock shared dependencies to avoid any top-level
+            # NOTE: we lock shared dependencies to avoid any top-level
             # dependencies getting unlocked (which would happen if they were
             # also subdependencies of the dependency being unlocked)
             ::Bundler::Definition.build(

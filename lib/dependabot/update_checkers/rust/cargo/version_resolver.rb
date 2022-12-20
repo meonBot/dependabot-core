@@ -12,7 +12,7 @@ module Dependabot
     module Rust
       class Cargo
         class VersionResolver
-          BRANCH_NOT_FOUND_REGEX = /failed to find branch `(?<branch>[^`]+)`/
+          BRANCH_NOT_FOUND_REGEX = /failed to find branch `(?<branch>[^`]+)`/.freeze
 
           def initialize(dependency:, dependency_files:, credentials:)
             @dependency = dependency
@@ -48,8 +48,8 @@ module Dependabot
 
               version_class.new(updated_version)
             end
-          rescue SharedHelpers::HelperSubprocessFailed => error
-            handle_cargo_errors(error)
+          rescue SharedHelpers::HelperSubprocessFailed => e
+            handle_cargo_errors(e)
           end
 
           def get_version_from_lockfile(lockfile_content)
@@ -131,7 +131,7 @@ module Dependabot
             return true if message.include?("wasn't a root")
             return true if message.include?("requires a nightly version")
 
-            message.match?(/feature `[^\`]+` is required/)
+            message.match?(/feature `[^`]+` is required/)
           end
 
           def write_manifest_files
@@ -165,7 +165,7 @@ module Dependabot
             object = TomlRB.parse(content)
 
             package_name = object.dig("package", "name")
-            return content unless package_name&.match?(/[\{\}]/)
+            return content unless package_name&.match?(/[{}]/)
 
             if lockfile
               raise "Sanitizing name for pkg with lockfile. Investigate!"
