@@ -10,7 +10,7 @@ module Dependabot
     module Go
       class Dep
         class VersionResolver
-          NOT_FOUND_REGEX = /failed to list versions for (?<repo_url>.*?):\s+/
+          NOT_FOUND_REGEX = /failed to list versions for (?<repo_url>.*?):\s+/.freeze
 
           def initialize(dependency:, dependency_files:, credentials:)
             @dependency = dependency
@@ -30,27 +30,24 @@ module Dependabot
             base_directory = File.join("src", "project",
                                        dependency_files.first.directory)
             base_parts = base_directory.split("/").length
-            updated_version =
-              SharedHelpers.in_a_temporary_directory(base_directory) do |dir|
-                write_temporary_dependency_files
+            SharedHelpers.in_a_temporary_directory(base_directory) do |dir|
+              write_temporary_dependency_files
 
-                SharedHelpers.with_git_configured(credentials: credentials) do
-                  # Shell out to dep, which handles everything for us, and does
-                  # so without doing an install (so it's fast).
-                  command = "dep ensure -update --no-vendor #{dependency.name}"
-                  dir_parts = dir.realpath.to_s.split("/")
-                  gopath = File.join(dir_parts[0..-(base_parts + 1)])
-                  run_shell_command(command, "GOPATH" => gopath)
-                end
-
-                new_lockfile_content = File.read("Gopkg.lock")
-
-                get_version_from_lockfile(new_lockfile_content)
+              SharedHelpers.with_git_configured(credentials: credentials) do
+                # Shell out to dep, which handles everything for us, and does
+                # so without doing an install (so it's fast).
+                command = "dep ensure -update --no-vendor #{dependency.name}"
+                dir_parts = dir.realpath.to_s.split("/")
+                gopath = File.join(dir_parts[0..-(base_parts + 1)])
+                run_shell_command(command, "GOPATH" => gopath)
               end
 
-            updated_version
-          rescue SharedHelpers::HelperSubprocessFailed => error
-            handle_dep_errors(error)
+              new_lockfile_content = File.read("Gopkg.lock")
+
+              get_version_from_lockfile(new_lockfile_content)
+            end
+          rescue SharedHelpers::HelperSubprocessFailed => e
+            handle_dep_errors(e)
           end
 
           def get_version_from_lockfile(lockfile_content)

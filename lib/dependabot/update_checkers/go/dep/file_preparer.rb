@@ -65,9 +65,7 @@ module Dependabot
             content = remove_git_source(content) if remove_git_source?
             content = replace_git_pin(content) if replace_git_pin?
             content = replace_version_constraint(content, file.name)
-            content = add_fsnotify_source(content)
-
-            content
+            add_fsnotify_source(content)
           end
 
           def remove_git_source(content)
@@ -105,7 +103,7 @@ module Dependabot
             TomlRB.dump(parsed_manifest)
           end
 
-          # Note: We don't need to care about formatting in this method, since
+          # NOTE: We don't need to care about formatting in this method, since
           # we're only using the manifest to find the latest resolvable version
           def replace_version_constraint(content, filename)
             parsed_manifest = TomlRB.parse(content)

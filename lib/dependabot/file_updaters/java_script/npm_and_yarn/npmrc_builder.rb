@@ -23,7 +23,8 @@ module Dependabot
             initial_content =
               if npmrc_file then complete_npmrc_from_credentials
               elsif yarnrc_file then build_npmrc_from_yarnrc
-              else build_npmrc_content_from_lockfile
+              else
+                build_npmrc_content_from_lockfile
               end
 
             return initial_content || "" unless registry_credentials.any?
@@ -147,7 +148,7 @@ module Dependabot
                             select { |url| url.include?(registry) }
 
             scopes = affected_urls.map do |url|
-              url.split(/\%40|@/)[1]&.split(%r{\%2F|/})&.first
+              url.split(/%40|@/)[1]&.split(%r{%2F|/})&.first
             end
 
             # Registry used for unscoped packages

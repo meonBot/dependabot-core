@@ -139,9 +139,9 @@ module Dependabot
           "heads/#{branch_name}",
           commit.sha
         )
-      rescue Octokit::UnprocessableEntity => error
+      rescue Octokit::UnprocessableEntity => e
         # Return quietly in the case of a race
-        return nil if error.message.match?(/Reference already exists/i)
+        return nil if e.message.match?(/Reference already exists/i)
         raise if @retrying_branch_creation
 
         @retrying_branch_creation = true
@@ -178,9 +178,9 @@ module Dependabot
           reviewers: reviewers_hash[:reviewers] || [],
           team_reviewers: reviewers_hash[:team_reviewers] || []
         )
-      rescue Octokit::UnprocessableEntity => error
-        return if error.message.include?("not a collaborator")
-        return if error.message.include?("Could not resolve to a node")
+      rescue Octokit::UnprocessableEntity => e
+        return if e.message.include?("not a collaborator")
+        return if e.message.include?("Could not resolve to a node")
 
         raise
       end
@@ -209,9 +209,9 @@ module Dependabot
           pr_name,
           pr_description
         )
-      rescue Octokit::UnprocessableEntity => error
+      rescue Octokit::UnprocessableEntity => e
         # Ignore races that we lose
-        raise unless error.message.include?("pull request already exists")
+        raise unless e.message.include?("pull request already exists")
       end
 
       def default_branch

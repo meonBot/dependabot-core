@@ -19,7 +19,7 @@ module Dependabot
                                 "ItemGroup > Dependency, "\
                                 "ItemGroup > DevelopmentDependency"
 
-          PROPERTY_REGEX      = /\$\((?<property>.*?)\)/
+          PROPERTY_REGEX      = /\$\((?<property>.*?)\)/.freeze
 
           def initialize(dependency_files:)
             @dependency_files = dependency_files
@@ -93,7 +93,7 @@ module Dependabot
             return unless requirement
 
             # Remove brackets if present
-            version = requirement.gsub(/[\(\)\[\]]/, "").strip
+            version = requirement.gsub(/[()\[\]]/, "").strip
 
             # Take the first (and therefore lowest) element of any range. Nuget
             # resolves dependencies to the "Lowest Applicable Version".

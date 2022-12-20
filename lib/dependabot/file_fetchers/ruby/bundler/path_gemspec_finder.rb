@@ -85,7 +85,7 @@ module Dependabot
                 [node.children[2]]
               end
             rescue StandardError
-              return node.children
+              node.children
             end
           end
           # rubocop:enable Security/Eval
