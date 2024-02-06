@@ -16,7 +16,7 @@ module Dependabot
       class Pip
         # This class does version resolution for pyproject.toml files.
         class PoetryVersionResolver
-          VERSION_REGEX = /[0-9]+(?:\.[A-Za-z0-9\-_]+)*/
+          VERSION_REGEX = /[0-9]+(?:\.[A-Za-z0-9\-_]+)*/.freeze
 
           attr_reader :dependency, :dependency_files, :credentials
 
@@ -58,7 +58,8 @@ module Dependabot
 
                 updated_lockfile =
                   if File.exist?("poetry.lock") then File.read("poetry.lock")
-                  else File.read("pyproject.lock")
+                  else
+                    File.read("pyproject.lock")
                   end
                 updated_lockfile = TomlRB.parse(updated_lockfile)
 

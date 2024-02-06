@@ -12,15 +12,15 @@ module Dependabot
   module Utils
     module Go
       class Requirement < Gem::Requirement
-        WILDCARD_REGEX = /(?:\.|^)[xX*]/
-        OR_SEPARATOR = /(?<=[a-zA-Z0-9*])\s*\|{2}/
+        WILDCARD_REGEX = /(?:\.|^)[xX*]/.freeze
+        OR_SEPARATOR = /(?<=[a-zA-Z0-9*])\s*\|{2}/.freeze
 
         # Override the version pattern to allow a 'v' prefix
         quoted = OPS.keys.map { |k| Regexp.quote(k) }.join("|")
         version_pattern = "v?#{Utils::Go::Version::VERSION_PATTERN}"
 
         PATTERN_RAW = "\\s*(#{quoted})?\\s*(#{version_pattern})\\s*"
-        PATTERN = /\A#{PATTERN_RAW}\z/
+        PATTERN = /\A#{PATTERN_RAW}\z/.freeze
 
         # Use Utils::Go::Version rather than Gem::Version to ensure that
         # pre-release versions aren't transformed.
@@ -71,7 +71,8 @@ module Dependabot
           elsif req_string.include?(" - ") then convert_hyphen_req(req_string)
           elsif req_string.match?(/^[\dv^]/) then convert_caret_req(req_string)
           elsif req_string.match?(/[<=>]/) then req_string
-          else ruby_range(req_string)
+          else
+            ruby_range(req_string)
           end
         end
 
@@ -137,7 +138,7 @@ module Dependabot
           "~> #{parts.join('.')}"
         end
 
-        # Note: Dep's caret notation implementation doesn't distinguish between
+        # NOTE: Dep's caret notation implementation doesn't distinguish between
         # pre and post-1.0.0 requirements (unlike in JS)
         def convert_caret_req(req_string)
           version = req_string.gsub(/^\^?v?/, "")

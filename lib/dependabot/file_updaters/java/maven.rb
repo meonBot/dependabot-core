@@ -104,7 +104,7 @@ module Dependabot
           original_pom_declarations(dep, req).each do |old_declaration|
             updated_content = updated_content.gsub(old_declaration) do |old_dec|
               version_string =
-                old_dec.match(%r{(?<=\<version\>).*(?=\</version\>)})
+                old_dec.match(%r{(?<=\<version\>).*(?=</version>)})
               cleaned_version_string = version_string.to_s.gsub(/(?<=\}).*/, "")
 
               old_dec.gsub(

@@ -33,8 +33,8 @@ module Dependabot
 
                 updated_content
               end
-          rescue SharedHelpers::HelperSubprocessFailed => error
-            handle_composer_errors(error)
+          rescue SharedHelpers::HelperSubprocessFailed => e
+            handle_composer_errors(e)
           end
 
           private

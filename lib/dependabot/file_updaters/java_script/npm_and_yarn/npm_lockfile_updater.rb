@@ -41,18 +41,18 @@ module Dependabot
 
                 updated_content
               end
-          rescue SharedHelpers::HelperSubprocessFailed => error
-            handle_npm_updater_error(error, lockfile)
+          rescue SharedHelpers::HelperSubprocessFailed => e
+            handle_npm_updater_error(e, lockfile)
           end
 
           private
 
           attr_reader :dependencies, :dependency_files, :credentials
 
-          UNREACHABLE_GIT = /ls-remote (?:(-h -t)|(--tags --heads)) (?<url>.*)/
+          UNREACHABLE_GIT = /ls-remote (?:(-h -t)|(--tags --heads)) (?<url>.*)/.freeze
           FORBIDDEN_PACKAGE =
-            /(403 Forbidden|401 Unauthorized): (?<package_req>.*)/
-          MISSING_PACKAGE = /404 Not Found: (?<package_req>.*)/
+            /(403 Forbidden|401 Unauthorized): (?<package_req>.*)/.freeze
+          MISSING_PACKAGE = /404 Not Found: (?<package_req>.*)/.freeze
 
           def dependency
             # For now, we'll only ever be updating a single dependency for JS
@@ -94,7 +94,7 @@ module Dependabot
               package_name =
                 error.message.match(MISSING_PACKAGE).
                 named_captures["package_req"].
-                split(/(?<=\w)\@/).first
+                split(/(?<=\w)@/).first
               handle_missing_package(package_name)
             end
             if error.message.include?("#{dependency.name}@") &&
@@ -131,7 +131,7 @@ module Dependabot
               package_name =
                 error.message.match(FORBIDDEN_PACKAGE).
                 named_captures["package_req"].
-                split(/(?<=\w)\@/).first
+                split(/(?<=\w)@/).first
               handle_missing_package(package_name)
             end
             if error.message.match?(UNREACHABLE_GIT)
@@ -324,7 +324,7 @@ module Dependabot
             git_dependencies_to_lock.each do |_, details|
               next unless details[:from]
 
-              new_r = /"from": "#{Regexp.quote(details[:from])}#[^\"]+"/
+              new_r = /"from": "#{Regexp.quote(details[:from])}#[^"]+"/
               old_r = %("from": "#{details[:from]}")
               updated_content = updated_content.gsub(new_r, old_r)
             end

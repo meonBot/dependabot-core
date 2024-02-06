@@ -51,8 +51,8 @@ module Dependabot
 
               updated_files.fetch("yarn.lock")
             end
-          rescue SharedHelpers::HelperSubprocessFailed => error
-            handle_yarn_lock_updater_error(error, yarn_lock)
+          rescue SharedHelpers::HelperSubprocessFailed => e
+            handle_yarn_lock_updater_error(e, yarn_lock)
           end
 
           # rubocop:disable Metrics/CyclomaticComplexity
@@ -67,10 +67,10 @@ module Dependabot
                 end
               end
             end
-          rescue SharedHelpers::HelperSubprocessFailed => error
-            raise unless error.message.include?("The registry may be down") ||
-                         error.message.include?("ETIMEDOUT") ||
-                         error.message.include?("ENOBUFS")
+          rescue SharedHelpers::HelperSubprocessFailed => e
+            raise unless e.message.include?("The registry may be down") ||
+                         e.message.include?("ETIMEDOUT") ||
+                         e.message.include?("ENOBUFS")
 
             retry_count ||= 0
             retry_count += 1
@@ -139,7 +139,7 @@ module Dependabot
               package_name =
                 error.message.match(/package "(?<package_req>.*)?"/).
                 named_captures["package_req"].
-                split(/(?<=\w)\@/).first
+                split(/(?<=\w)@/).first
               handle_missing_package(package_name)
             end
             raise
@@ -222,7 +222,7 @@ module Dependabot
           end
 
           def prepared_yarn_lockfile_content(content)
-            content.gsub(/^#{Regexp.quote(dependency.name)}\@.*?\n\n/m, "")
+            content.gsub(/^#{Regexp.quote(dependency.name)}@.*?\n\n/m, "")
           end
 
           def replace_ssh_sources(content)
@@ -246,7 +246,8 @@ module Dependabot
                 workspace_object.values_at("packages", "nohoist").
                   flatten.compact
               elsif workspace_object.is_a?(Array) then workspace_object
-              else raise "Unexpected workspace object"
+              else
+                raise "Unexpected workspace object"
               end
 
             paths_array.each { |path| path.gsub!(%r{^\./}, "") }

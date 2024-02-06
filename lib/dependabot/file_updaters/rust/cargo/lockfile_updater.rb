@@ -39,8 +39,8 @@ module Dependabot
 
               raise "Failed to update #{dependency.name}!"
             end
-          rescue Dependabot::SharedHelpers::HelperSubprocessFailed => error
-            handle_cargo_error(error)
+          rescue Dependabot::SharedHelpers::HelperSubprocessFailed => e
+            handle_cargo_error(e)
           end
 
           private
@@ -138,14 +138,12 @@ module Dependabot
           def prepared_manifest_content(file)
             content = updated_manifest_content(file)
             content = pin_version(content) unless git_dependency?
-            content = replace_ssh_urls(content)
-            content
+            replace_ssh_urls(content)
           end
 
           def prepared_path_dependency_content(file)
             content = file.content.dup
-            content = replace_ssh_urls(content)
-            content
+            replace_ssh_urls(content)
           end
 
           def updated_manifest_content(file)

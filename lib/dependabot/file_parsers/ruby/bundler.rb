@@ -122,9 +122,9 @@ module Dependabot
                   reject { |dep| dep.source.is_a?(::Bundler::Source::Gemspec) }
               end
             end
-        rescue SharedHelpers::ChildProcessFailed => error
-          msg = error.error_class + " with message: " +
-                error.error_message.force_encoding("UTF-8").encode
+        rescue SharedHelpers::ChildProcessFailed => e
+          msg = e.error_class + " with message: " +
+                e.error_message.force_encoding("UTF-8").encode
           raise Dependabot::DependencyFileNotEvaluatable, msg
         end
 
@@ -144,8 +144,8 @@ module Dependabot
                 ::Bundler.load_gemspec_uncached(file.name)
               end
             end
-        rescue SharedHelpers::ChildProcessFailed => error
-          msg = error.error_class + " with message: " + error.error_message
+        rescue SharedHelpers::ChildProcessFailed => e
+          msg = e.error_class + " with message: " + e.error_message
           raise Dependabot::DependencyFileNotEvaluatable, msg
         end
 

@@ -59,8 +59,8 @@ module Dependabot
       rescue Octokit::NotFound, Gitlab::Error::NotFound,
              Dependabot::Clients::Bitbucket::NotFound
         raise Dependabot::BranchNotFound, branch
-      rescue Octokit::Conflict => error
-        raise unless error.message.include?("Repository is empty")
+      rescue Octokit::Conflict => e
+        raise unless e.message.include?("Repository is empty")
       end
 
       private
@@ -109,11 +109,11 @@ module Dependabot
 
       def fetch_file_from_host_or_submodule(filename, type: "file")
         fetch_file_from_host(filename, type: type)
-      rescue Dependabot::DependencyFileNotFound => error
+      rescue Dependabot::DependencyFileNotFound => e
         begin
           repo_contents(dir: File.dirname(filename))
         rescue StandardError
-          raise error
+          raise e
         end
 
         fetch_file_from_host(filename, type: type)
@@ -242,8 +242,8 @@ module Dependabot
       def fetch_file_content_from_github(path, repo, commit)
         tmp = github_client_for_source.contents(repo, path: path, ref: commit)
         Base64.decode64(tmp.content).force_encoding("UTF-8").encode
-      rescue Octokit::Forbidden => error
-        raise unless error.message.include?("too_large")
+      rescue Octokit::Forbidden => e
+        raise unless e.message.include?("too_large")
 
         # Fall back to Git Data API to fetch the file
         prefix_dir = directory.gsub(%r{(^/|/$)}, "")

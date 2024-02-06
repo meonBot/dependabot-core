@@ -22,11 +22,11 @@ module Dependabot
           require_relative "gemspec_sanitizer"
           require_relative "gemspec_dependency_name_finder"
 
-          LOCKFILE_ENDING = /(?<ending>\s*(?:RUBY VERSION|BUNDLED WITH).*)/m
-          GIT_DEPENDENCIES_SECTION = /GIT\n.*?\n\n(?!GIT)/m
-          GIT_DEPENDENCY_DETAILS = /GIT\n.*?\n\n/m
+          LOCKFILE_ENDING = /(?<ending>\s*(?:RUBY VERSION|BUNDLED WITH).*)/m.freeze
+          GIT_DEPENDENCIES_SECTION = /GIT\n.*?\n\n(?!GIT)/m.freeze
+          GIT_DEPENDENCY_DETAILS = /GIT\n.*?\n\n/m.freeze
           GEM_NOT_FOUND_ERROR_REGEX =
-            /locked to (?<name>[^\s]+) \(|not find (?<name>[^\s]+)-\d/
+            /locked to (?<name>[^\s]+) \(|not find (?<name>[^\s]+)-\d/.freeze
           GEMSPEC_SOURCES = [
             ::Bundler::Source::Path,
             ::Bundler::Source::Gemspec
@@ -118,15 +118,16 @@ module Dependabot
               old_reqs.each do |dep_name, old_req|
                 d_dep = definition.dependencies.find { |d| d.name == dep_name }
                 if old_req == :none then definition.dependencies.delete(d_dep)
-                else d_dep.instance_variable_set(:@requirement, old_req)
+                else
+                  d_dep.instance_variable_set(:@requirement, old_req)
                 end
               end
 
               definition.to_lock
-            rescue ::Bundler::GemNotFound => error
-              unlock_yanked_gem(dependencies_to_unlock, error) && retry
-            rescue ::Bundler::VersionConflict => error
-              unlock_blocking_subdeps(dependencies_to_unlock, error) && retry
+            rescue ::Bundler::GemNotFound => e
+              unlock_yanked_gem(dependencies_to_unlock, e) && retry
+            rescue ::Bundler::VersionConflict => e
+              unlock_blocking_subdeps(dependencies_to_unlock, e) && retry
             rescue *RETRYABLE_ERRORS
               raise if @retrying
 

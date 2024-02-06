@@ -28,7 +28,7 @@ module Dependabot
           def updated_requirements
             return requirements unless latest_version
 
-            # Note: Order is important here. The FileUpdater needs the updated
+            # NOTE: Order is important here. The FileUpdater needs the updated
             # requirement at index `i` to correspond to the previous requirement
             # at the same index.
             requirements.map do |req|
@@ -123,7 +123,8 @@ module Dependabot
                 version_to_be_permitted.segments[index]
               elsif index == index_to_update
                 version_to_be_permitted.segments[index] + 1
-              else 0
+              else
+                0
               end
             end
 

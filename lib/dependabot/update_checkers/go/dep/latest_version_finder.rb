@@ -24,7 +24,8 @@ module Dependabot
           def latest_version
             @latest_version ||=
               if git_dependency? then latest_version_for_git_dependency
-              else latest_release_tag_version
+              else
+                latest_release_tag_version
               end
           end
 

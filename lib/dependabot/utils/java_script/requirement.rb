@@ -6,15 +6,15 @@ module Dependabot
   module Utils
     module JavaScript
       class Requirement < Gem::Requirement
-        AND_SEPARATOR = /(?<=[a-zA-Z0-9*])\s+(?!\s*[|-])/
-        OR_SEPARATOR = /(?<=[a-zA-Z0-9*])\s*\|+/
+        AND_SEPARATOR = /(?<=[a-zA-Z0-9*])\s+(?!\s*[|-])/.freeze
+        OR_SEPARATOR = /(?<=[a-zA-Z0-9*])\s*\|+/.freeze
 
         # Override the version pattern to allow a 'v' prefix
         quoted = OPS.keys.map { |k| Regexp.quote(k) }.join("|")
         version_pattern = "v?#{Gem::Version::VERSION_PATTERN}"
 
         PATTERN_RAW = "\\s*(#{quoted})?\\s*(#{version_pattern})\\s*"
-        PATTERN = /\A#{PATTERN_RAW}\z/
+        PATTERN = /\A#{PATTERN_RAW}\z/.freeze
 
         def self.parse(obj)
           if obj.is_a?(Gem::Version)
@@ -63,13 +63,14 @@ module Dependabot
           elsif req_string.start_with?("^") then convert_caret_req(req_string)
           elsif req_string.include?(" - ") then convert_hyphen_req(req_string)
           elsif req_string.match?(/[<>]/) then req_string
-          else ruby_range(req_string)
+          else
+            ruby_range(req_string)
           end
         end
         # rubocop:enable Metrics/PerceivedComplexity
 
         def convert_tilde_req(req_string)
-          version = req_string.gsub(/^~\>?/, "")
+          version = req_string.gsub(/^~>?/, "")
           parts = version.split(".")
           parts << "0" if parts.count < 3
           "~> #{parts.join('.')}"
@@ -93,7 +94,7 @@ module Dependabot
         def convert_caret_req(req_string)
           version = req_string.gsub(/^\^/, "")
           parts = version.split(".")
-          parts = parts.fill(0, parts.length...3)
+          parts.fill(0, parts.length...3)
           first_non_zero = parts.find { |d| d != "0" }
           first_non_zero_index =
             first_non_zero ? parts.index(first_non_zero) : parts.count - 1
@@ -101,7 +102,8 @@ module Dependabot
             if i < first_non_zero_index then part
             elsif i == first_non_zero_index then (part.to_i + 1).to_s
             elsif i > first_non_zero_index && i == 2 then "0.a"
-            else 0
+            else
+              0
             end
           end.join(".")
 

@@ -175,7 +175,7 @@ module Dependabot
         end
 
         def version_regex(version)
-          /(?:[^0-9\.]|\A)#{Regexp.escape(version || "unknown")}\z/
+          /(?:[^0-9.]|\A)#{Regexp.escape(version || "unknown")}\z/
         end
 
         def version_class
@@ -201,11 +201,11 @@ module Dependabot
           releases = releases.reject { |r| r.tag_name.nil? }
 
           clean_release_names =
-            releases.map { |r| r.tag_name.gsub(/^[^0-9\.]*/, "") }
+            releases.map { |r| r.tag_name.gsub(/^[^0-9.]*/, "") }
 
           if clean_release_names.all? { |nm| version_class.correct?(nm) }
             releases.sort_by do |r|
-              version_class.new(r.tag_name.gsub(/^[^0-9\.]*/, ""))
+              version_class.new(r.tag_name.gsub(/^[^0-9.]*/, ""))
             end.reverse
           else
             releases.sort_by(&:id).reverse

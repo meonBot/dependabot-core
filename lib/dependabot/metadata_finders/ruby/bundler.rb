@@ -19,11 +19,9 @@ module Dependabot
         ).freeze
 
         def homepage_url
-          if new_source_type == "default" || new_source_type == "rubygems"
-            if rubygems_listing["homepage_uri"]
-              return rubygems_listing["homepage_uri"]
+          if (new_source_type == "default" || new_source_type == "rubygems") && rubygems_listing["homepage_uri"]
+            return rubygems_listing["homepage_uri"]
             end
-          end
 
           super
         end

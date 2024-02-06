@@ -9,10 +9,10 @@ module Dependabot
     module Elixir
       class Hex
         class RequirementsUpdater
-          OPERATORS = />=|<=|>|<|==|~>/
-          AND_SEPARATOR = /\s+and\s+/
-          OR_SEPARATOR = /\s+or\s+/
-          SEPARATOR = /#{AND_SEPARATOR}|#{OR_SEPARATOR}/
+          OPERATORS = />=|<=|>|<|==|~>/.freeze
+          AND_SEPARATOR = /\s+and\s+/.freeze
+          OR_SEPARATOR = /\s+or\s+/.freeze
+          SEPARATOR = /#{AND_SEPARATOR}|#{OR_SEPARATOR}/.freeze
 
           def initialize(requirements:, latest_resolvable_version:,
                          updated_source:)
@@ -37,7 +37,7 @@ module Dependabot
           attr_reader :requirements, :latest_resolvable_version, :updated_source
 
           # rubocop:disable Metrics/AbcSize
-          # rubocop:disable PerceivedComplexity
+          # rubocop:disable Metrics/PerceivedComplexity
           def updated_mixfile_requirement(req)
             req = update_source(req)
             return req unless latest_resolvable_version && req[:requirement]
@@ -65,7 +65,7 @@ module Dependabot
             req.merge(requirement: new_requirement)
           end
           # rubocop:enable Metrics/AbcSize
-          # rubocop:enable PerceivedComplexity
+          # rubocop:enable Metrics/PerceivedComplexity
 
           def update_source(requirement_hash)
             # Only git sources ever need to be updated. Anything else should be
@@ -144,7 +144,8 @@ module Dependabot
                 version_to_be_permitted.segments[index]
               elsif index == index_to_update
                 version_to_be_permitted.segments[index] + 1
-              else 0
+              else
+                0
               end
             end
 

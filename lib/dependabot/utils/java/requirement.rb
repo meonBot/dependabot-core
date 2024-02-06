@@ -9,7 +9,7 @@ module Dependabot
         quoted = OPS.keys.map { |k| Regexp.quote k }.join("|")
         PATTERN_RAW =
           "\\s*(#{quoted})?\\s*(#{Utils::Java::Version::VERSION_PATTERN})\\s*"
-        PATTERN = /\A#{PATTERN_RAW}\z/
+        PATTERN = /\A#{PATTERN_RAW}\z/.freeze
 
         def self.parse(obj)
           if obj.is_a?(Gem::Version)
@@ -77,13 +77,15 @@ module Dependabot
           lower_b =
             if ["(", "["].include?(lower_b) then nil
             elsif lower_b.start_with?("(") then "> #{lower_b.sub(/\(\s*/, '')}"
-            else ">= #{lower_b.sub(/\[\s*/, '').strip}"
+            else
+              ">= #{lower_b.sub(/\[\s*/, '').strip}"
             end
 
           upper_b =
             if [")", "]"].include?(upper_b) then nil
             elsif upper_b.end_with?(")") then "< #{upper_b.sub(/\s*\)/, '')}"
-            else "<= #{upper_b.sub(/\s*\]/, '').strip}"
+            else
+              "<= #{upper_b.sub(/\s*\]/, '').strip}"
             end
 
           [lower_b, upper_b].compact
@@ -95,7 +97,7 @@ module Dependabot
           # If a soft requirement is being used, treat it as an equality matcher
           return req_string unless req_string&.start_with?("[")
 
-          req_string.gsub(/[\[\]\(\)]/, "")
+          req_string.gsub(/[\[\]()]/, "")
         end
 
         def convert_wildcard_req(req_string)

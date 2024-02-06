@@ -11,8 +11,8 @@ require "dependabot/source"
 # rubocop:disable Metrics/ClassLength
 module Dependabot
   class GitCommitChecker
-    VERSION_REGEX = /(?<version>[0-9]+\.[0-9]+(?:\.[a-zA-Z0-9\-]+)*)$/
-    KNOWN_HOSTS = /github\.com|bitbucket\.org|gitlab.com/
+    VERSION_REGEX = /(?<version>[0-9]+\.[0-9]+(?:\.[a-zA-Z0-9\-]+)*)$/.freeze
+    KNOWN_HOSTS = /github\.com|bitbucket\.org|gitlab.com/.freeze
 
     def initialize(dependency:, credentials:, ignored_versions: [])
       @dependency = dependency
@@ -145,7 +145,8 @@ module Dependabot
         next unless line.split(" ").last.start_with?("refs/tags")
 
         if line.strip.end_with?("^{}") then peeled_lines << line
-        else unpeeled_lines << line
+        else
+          unpeeled_lines << line
         end
       end
 
@@ -195,7 +196,8 @@ module Dependabot
     def uri_with_auth(uri)
       bare_uri =
         if uri.include?("git@") then uri.split("git@").last.sub(":", "/")
-        else uri.sub(%r{.*?://}, "")
+        else
+          uri.sub(%r{.*?://}, "")
         end
       cred = credentials.select { |c| c["type"] == "git_source" }.
              find { |c| bare_uri.start_with?(c["host"]) }
@@ -250,7 +252,8 @@ module Dependabot
 
       if comparison.commits.none? then "behind"
       elsif comparison.compare_same_ref then "identical"
-      else "ahead"
+      else
+        "ahead"
       end
     end
 
@@ -267,7 +270,8 @@ module Dependabot
       # Conservatively assume that ref2 is ahead in the equality case, of
       # if we get an unexpected format (e.g., due to a 404)
       if JSON.parse(response.body).fetch("values", ["x"]).none? then "behind"
-      else "ahead"
+      else
+        "ahead"
       end
     end
 
@@ -339,7 +343,7 @@ module Dependabot
 
     def listing_tag_for_version(version)
       listing_tags.
-        find { |t| t.name =~ /(?:[^0-9\.]|\A)#{Regexp.escape(version)}\z/ }&.
+        find { |t| t.name =~ /(?:[^0-9.]|\A)#{Regexp.escape(version)}\z/ }&.
         name
     end
 

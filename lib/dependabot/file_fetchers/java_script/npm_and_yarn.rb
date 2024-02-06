@@ -195,12 +195,14 @@ module Dependabot
             if workspace_object.is_a?(Hash)
               workspace_object.values_at("packages", "nohoist").flatten.compact
             elsif workspace_object.is_a?(Array) then workspace_object
-            else raise "Unexpected workspace object"
+            else
+              raise "Unexpected workspace object"
             end
 
           paths_array.flat_map do |path|
             if path.include?("*") then expanded_paths(path)
-            else path
+            else
+              path
             end
           end
         end

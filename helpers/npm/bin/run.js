@@ -1,7 +1,7 @@
 const updater = require("../lib/updater");
 
 const functionMap = {
-  update: updater.updateDependencyFiles
+  update: updater.updateDependencyFiles,
 };
 
 function output(obj) {
@@ -9,7 +9,7 @@ function output(obj) {
 }
 
 const input = [];
-process.stdin.on("data", data => input.push(data));
+process.stdin.on("data", (data) => input.push(data));
 process.stdin.on("end", () => {
   const request = JSON.parse(input.join(""));
   const func = functionMap[request.function];
@@ -20,10 +20,10 @@ process.stdin.on("end", () => {
 
   func
     .apply(null, request.args)
-    .then(result => {
+    .then((result) => {
       output({ result: result });
     })
-    .catch(error => {
+    .catch((error) => {
       output({ error: error.message });
       process.exit(1);
     });

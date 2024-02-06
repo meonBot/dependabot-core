@@ -17,7 +17,7 @@ module Dependabot
         class RequirementsUpdater
           class UnfixableRequirement < StandardError; end
 
-          VERSION_REGEX = /[0-9]+(?:\.[A-Za-z0-9\-*]+)*/
+          VERSION_REGEX = /[0-9]+(?:\.[A-Za-z0-9\-*]+)*/.freeze
           ALLOWED_UPDATE_STRATEGIES =
             %i(bump_versions bump_versions_if_necessary).freeze
 
@@ -42,7 +42,7 @@ module Dependabot
           end
 
           def updated_requirements
-            # Note: Order is important here. The FileUpdater needs the updated
+            # NOTE: Order is important here. The FileUpdater needs the updated
             # requirement at index `i` to correspond to the previous requirement
             # at the same index.
             requirements.map do |req|
@@ -160,7 +160,8 @@ module Dependabot
                 version_to_be_permitted.segments[index]
               elsif index == index_to_update
                 version_to_be_permitted.segments[index] + 1
-              else 0
+              else
+                0
               end
             end.join(".")
           end

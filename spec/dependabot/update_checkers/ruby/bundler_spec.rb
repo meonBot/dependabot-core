@@ -143,7 +143,7 @@ RSpec.describe Dependabot::UpdateCheckers::Ruby::Bundler do
         stub_request(:get, registry_url + "versions").to_return(status: 404)
         stub_request(:get, registry_url + "api/v1/dependencies").
           to_return(status: 200)
-        # Note: returns details of three versions: 1.5.0, 1.9.0, and 1.10.0.beta
+        # NOTE: returns details of three versions: 1.5.0, 1.9.0, and 1.10.0.beta
         stub_request(:get, gemfury_business_url).
           to_return(status: 200, body: fixture("ruby", "gemfury_response"))
       end
@@ -285,7 +285,7 @@ RSpec.describe Dependabot::UpdateCheckers::Ruby::Bundler do
                 "content-type" => "application/x-git-upload-pack-advertisement"
               }
               stub_request(:get, url + "/info/refs?service=git-upload-pack").
-                with(basic_auth: ["x-access-token", "token"]).
+                with(basic_auth: %w(x-access-token token)).
                 to_return(
                   status: 200,
                   body: fixture("git", "upload_packs", upload_pack_fixture),
@@ -724,7 +724,7 @@ RSpec.describe Dependabot::UpdateCheckers::Ruby::Bundler do
                 "content-type" => "application/x-git-upload-pack-advertisement"
               }
               stub_request(:get, url + "/info/refs?service=git-upload-pack").
-                with(basic_auth: ["x-access-token", "token"]).
+                with(basic_auth: %w(x-access-token token)).
                 to_return(
                   status: 200,
                   body: fixture("git", "upload_packs", upload_pack_fixture),
@@ -1359,7 +1359,7 @@ RSpec.describe Dependabot::UpdateCheckers::Ruby::Bundler do
             end
 
             it "delegates to Bundler::RequirementsUpdater" do
-              # Note: the v1.13.0 for the source is because we stub the lookup
+              # NOTE: the v1.13.0 for the source is because we stub the lookup
               # for the updated source, but can't stub the lookup for the latest
               # version (in the LatestVersionFinder).
               expect(requirements_updater).

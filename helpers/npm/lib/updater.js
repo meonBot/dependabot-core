@@ -29,7 +29,7 @@ async function updateDependencyFiles(
   requirements,
   lockfile_name
 ) {
-  const readFile = fileName =>
+  const readFile = (fileName) =>
     fs.readFileSync(path.join(directory, fileName)).toString();
 
   await runAsync(npm6, npm6.load, [{ loglevel: "silent" }]);
@@ -40,17 +40,17 @@ async function updateDependencyFiles(
   const dryRun = true;
   const args = install_args(depName, desiredVersion, requirements, oldLockfile);
   const initial_installer = new installer.Installer(directory, dryRun, args, {
-    packageLockOnly: true
+    packageLockOnly: true,
   });
   // A bug in npm means the initial install will remove any git dependencies
   // from the lockfile. A subsequent install with no arguments fixes this.
   const cleanup_installer = new installer.Installer(directory, dryRun, [], {
-    packageLockOnly: true
+    packageLockOnly: true,
   });
 
   // Skip printing the success message
-  initial_installer.printInstalled = cb => cb();
-  cleanup_installer.printInstalled = cb => cb();
+  initial_installer.printInstalled = (cb) => cb();
+  cleanup_installer.printInstalled = (cb) => cb();
 
   // There are some hard-to-prevent bits of output.
   // This is horrible, but works.
@@ -68,7 +68,7 @@ async function updateDependencyFiles(
 }
 
 function install_args(depName, desiredVersion, requirements, oldLockfile) {
-  const source = (requirements.find(req => req.source) || {}).source;
+  const source = (requirements.find((req) => req.source) || {}).source;
 
   if (source && source.type === "git") {
     let originalVersion = ((oldLockfile["dependencies"] || {})[depName] || {})[
@@ -113,10 +113,10 @@ function muteStderr() {
 function installer_for_lockfile(oldLockfile) {
   const requireObjectsIncludeMatchers = Object.keys(
     oldLockfile["dependencies"] || {}
-  ).some(key => {
+  ).some((key) => {
     const requires = oldLockfile["dependencies"][key]["requires"] || {};
 
-    return Object.keys(requires).some(key2 =>
+    return Object.keys(requires).some((key2) =>
       requires[key2].match(/^\^|~|\<|\>/)
     );
   });

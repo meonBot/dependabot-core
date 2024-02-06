@@ -26,12 +26,12 @@ module Dependabot
         # just raise if the latest version can't be resolved. Knowing that is
         # still better than nothing, though.
         class PipfileVersionResolver
-          VERSION_REGEX = /[0-9]+(?:\.[A-Za-z0-9\-_]+)*/
+          VERSION_REGEX = /[0-9]+(?:\.[A-Za-z0-9\-_]+)*/.freeze
           GIT_DEPENDENCY_UNREACHABLE_REGEX =
-            /Command "git clone -q (?<url>[^\s]+).*" failed with error code 128/
+            /Command "git clone -q (?<url>[^\s]+).*" failed with error code 128/.freeze
 
           GIT_REFERENCE_NOT_FOUND_REGEX =
-            %r{Command "git reset --hard -q (?<tag>[^"]+)" .*/(?<name>.*?)$}
+            %r{Command "git reset --hard -q (?<tag>[^"]+)" .*/(?<name>.*?)$}.freeze
 
           attr_reader :dependency, :dependency_files, :credentials
 
@@ -84,8 +84,8 @@ module Dependabot
 
                   fetch_version_from_parsed_lockfile(updated_lockfile)
                 end
-              rescue SharedHelpers::HelperSubprocessFailed => error
-                handle_pipenv_errors(error)
+              rescue SharedHelpers::HelperSubprocessFailed => e
+                handle_pipenv_errors(e)
               end
             return unless @latest_resolvable_version_string
 
@@ -174,16 +174,16 @@ module Dependabot
                                    "pyenv exec pipenv lock")
 
                 true
-              rescue SharedHelpers::HelperSubprocessFailed => error
-                if error.message.include?("Could not find a version")
-                  msg = clean_error_message(error.message)
+              rescue SharedHelpers::HelperSubprocessFailed => e
+                if e.message.include?("Could not find a version")
+                  msg = clean_error_message(e.message)
                   msg.gsub!(/\s+\(from .*$/, "")
                   raise if msg.empty?
 
                   raise DependencyFileNotResolvable, msg
                 end
 
-                if error.message.include?("Not a valid python version")
+                if e.message.include?("Not a valid python version")
                   msg = "Pipenv does not support specifying Python ranges "\
                     "(see https://github.com/pypa/pipenv/issues/1050 for more "\
                     "details)."
@@ -262,8 +262,7 @@ module Dependabot
             content = pipfile.content
             content = freeze_other_dependencies(content)
             content = unlock_target_dependency(content) if unlock_requirement?
-            content = add_private_sources(content)
-            content
+            add_private_sources(content)
           end
 
           def freeze_other_dependencies(pipfile_content)
@@ -390,10 +389,10 @@ module Dependabot
             return if $CHILD_STATUS.success?
 
             raise SharedHelpers::HelperSubprocessFailed.new(raw_response, cmd)
-          rescue SharedHelpers::HelperSubprocessFailed => error
-            original_error ||= error
-            raise unless error.message.include?("InstallationError") ||
-                         error.message.include?("Could not find a version")
+          rescue SharedHelpers::HelperSubprocessFailed => e
+            original_error ||= e
+            raise unless e.message.include?("InstallationError") ||
+                         e.message.include?("Could not find a version")
             raise original_error if cmd.include?("--two")
 
             cmd = cmd.gsub("pipenv ", "pipenv --two ")

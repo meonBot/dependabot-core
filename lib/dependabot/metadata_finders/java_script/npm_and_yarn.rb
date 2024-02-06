@@ -137,7 +137,8 @@ module Dependabot
         def dependency_url
           registry_url =
             if new_source.nil? then "https://registry.npmjs.org"
-            else new_source.fetch(:url)
+            else
+              new_source.fetch(:url)
             end
 
           # NPM registries expect slashes to be escaped
@@ -153,7 +154,8 @@ module Dependabot
 
         def dependency_registry
           if new_source.nil? then "registry.npmjs.org"
-          else new_source.fetch(:url).gsub("https://", "").gsub("http://", "")
+          else
+            new_source.fetch(:url).gsub("https://", "").gsub("http://", "")
           end
         end
 

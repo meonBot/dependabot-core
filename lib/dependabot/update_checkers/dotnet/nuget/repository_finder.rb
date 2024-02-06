@@ -172,12 +172,12 @@ module Dependabot
 
           def default_repository_details
             {
-              repository_url:  DEFAULT_REPOSITORY_URL,
-              versions_url:    "https://api.nuget.org/v3-flatcontainer/"\
+              repository_url: DEFAULT_REPOSITORY_URL,
+              versions_url: "https://api.nuget.org/v3-flatcontainer/"\
                                "#{dependency.name.downcase}/index.json",
-              search_url:      "https://api-v2v3search-0.nuget.org/query"\
+              search_url: "https://api-v2v3search-0.nuget.org/query"\
                                "?q=#{dependency.name.downcase}&prerelease=true",
-              auth_header:     {},
+              auth_header: {},
               repository_type: "v3"
             }
           end
@@ -201,7 +201,7 @@ module Dependabot
                 find { |n| n.attribute("key")&.value == "ClearTextPassword" }&.
                 attribute("value")&.value
 
-              # Note: We have to look for plain text passwords, as we have no
+              # NOTE: We have to look for plain text passwords, as we have no
               # way of decrypting encrypted passwords. For the same reason we
               # don't fetch API keys from the nuget.config at all.
               next source_details[:token] = nil unless username && password

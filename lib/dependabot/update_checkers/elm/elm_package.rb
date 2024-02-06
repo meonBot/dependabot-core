@@ -116,7 +116,7 @@ module Dependabot
         end
 
         def ignore_reqs
-          # Note: we use Gem::Requirement here because ignore conditions will
+          # NOTE: we use Gem::Requirement here because ignore conditions will
           # be passed as Ruby ranges
           ignored_versions.map { |req| Gem::Requirement.new(req.split(",")) }
         end

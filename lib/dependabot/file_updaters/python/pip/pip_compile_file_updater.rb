@@ -131,10 +131,10 @@ module Dependabot
               raw_response,
               command
             )
-          rescue SharedHelpers::HelperSubprocessFailed => error
-            original_error ||= error
-            raise unless error.message.include?("InstallationError") ||
-                         error.message.include?("futures")
+          rescue SharedHelpers::HelperSubprocessFailed => e
+            original_error ||= e
+            raise unless e.message.include?("InstallationError") ||
+                         e.message.include?("futures")
             raise original_error if File.exist?(".python-version")
 
             command = "pyenv local 2.7.15 && " + command

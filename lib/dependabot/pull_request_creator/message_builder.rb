@@ -24,8 +24,8 @@ module Dependabot
                             card_file_box loud_sound mute busts_in_silhouette
                             children_crossing building_construction iphone
                             clown_face egg see_no_evil camera_flash).freeze
-      ISSUE_TAG_REGEX = /(?<=[\s(\\]|^)(?<tag>(?:\#|GH-)\d+)(?=[^A-z0-9\-]|$)/
-      GITHUB_REF_REGEX = %r{github\.com/[^/\s]+/[^/\s]+/(?:issue|pull)}
+      ISSUE_TAG_REGEX = /(?<=[\s(\\]|^)(?<tag>(?:\#|GH-)\d+)(?=[^A-z0-9\-]|$)/.freeze
+      GITHUB_REF_REGEX = %r{github\.com/[^/\s]+/[^/\s]+/(?:issue|pull)}.freeze
 
       attr_reader :source, :dependencies, :files, :credentials,
                   :pr_message_footer, :author_details, :vulnerabilities_fixed
@@ -589,8 +589,8 @@ module Dependabot
       end
 
       def sanitize_template_tags(text)
-        text.gsub(/\<.*?\>/) do |tag|
-          tag_contents = tag.match(/\<(.*?)\>/).captures.first.strip
+        text.gsub(/<.*?>/) do |tag|
+          tag_contents = tag.match(/<(.*?)>/).captures.first.strip
 
           # Unclosed calls to template overflow out of the blockquote block,
           # wrecking the rest of our PRs. Other tags don't share this problem.

@@ -16,7 +16,7 @@ module Dependabot
         version_pattern = Utils::Rust::Version::VERSION_PATTERN
 
         PATTERN_RAW = "\\s*(#{quoted})?\\s*(#{version_pattern})\\s*"
-        PATTERN = /\A#{PATTERN_RAW}\z/
+        PATTERN = /\A#{PATTERN_RAW}\z/.freeze
 
         # Use Utils::Rust::Version rather than Gem::Version to ensure that
         # pre-release versions aren't transformed.
@@ -62,7 +62,8 @@ module Dependabot
           elsif req_string.match?(/^~[^>]/) then convert_tilde_req(req_string)
           elsif req_string.match?(/^[\d^]/) then convert_caret_req(req_string)
           elsif req_string.match?(/[<=>]/) then req_string
-          else ruby_range(req_string)
+          else
+            ruby_range(req_string)
           end
         end
 
@@ -96,7 +97,8 @@ module Dependabot
           upper_bound = parts.map.with_index do |part, i|
             if i < first_non_zero_index then part
             elsif i == first_non_zero_index then (part.to_i + 1).to_s
-            else 0
+            else
+              0
             end
           end.join(".")
 
